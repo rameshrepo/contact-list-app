@@ -45,9 +45,11 @@ public class ContactRepositoryImpl implements ContactRepositoryCustom
       sbuilder.append(baseQuery);
     }
     String queryHQL = sbuilder.toString().replaceFirst("AND", "WHERE").trim();
-    Long numberofRows = getRowCount(conditions, parameters);
-    System.out.println("Number of Rows :" + numberofRows);
-    System.out.println(queryHQL);
+//    Long numberofRows = getRowCount(conditions, parameters);
+//    TODO: Handle run-away queries to limit number of rows fetched
+//    if (numberofRows > max_rows) {
+//      throw new ContactListException("Number of")
+//    }
     javax.persistence.Query q = em.createQuery(queryHQL);
     for (Map.Entry<String,String> parameter: parameters.entrySet()) {
       q.setParameter(parameter.getKey(), parameter.getValue());
@@ -55,20 +57,18 @@ public class ContactRepositoryImpl implements ContactRepositoryCustom
     return q.getResultList();
   }
 
-  public Long getRowCount(Map<String, String> conditions, Map<String, String> parameters) {
-    StringBuilder queryBuilder = new StringBuilder("SELECT count(c.id) FROM Contact c LEFT JOIN c.organisation o ");
-    if (conditions.size() >0)  {
-      String baseQuery = conditions.values().stream().collect(Collectors.joining(" "));
-      queryBuilder.append(baseQuery);
-    }
-    String rowCountQueryHQL = queryBuilder.toString().replaceFirst("AND", "WHERE").trim();
-    System.out.println(rowCountQueryHQL);
-    javax.persistence.Query q = em.createQuery(rowCountQueryHQL);
-    for (Map.Entry<String,String> parameter: parameters.entrySet()) {
-      q.setParameter(parameter.getKey(), parameter.getValue());
-    }
-    return (Long)q.getSingleResult();
-    //return 1L;
-  }
+//  private Long getRowCount(Map<String, String> conditions, Map<String, String> parameters) {
+//    StringBuilder queryBuilder = new StringBuilder("SELECT count(c.id) FROM Contact c LEFT JOIN c.organisation o ");
+//    if (conditions.size() >0)  {
+//      String baseQuery = conditions.values().stream().collect(Collectors.joining(" "));
+//      queryBuilder.append(baseQuery);
+//    }
+//    String rowCountQueryHQL = queryBuilder.toString().replaceFirst("AND", "WHERE").trim();
+//    javax.persistence.Query q = em.createQuery(rowCountQueryHQL);
+//    for (Map.Entry<String,String> parameter: parameters.entrySet()) {
+//      q.setParameter(parameter.getKey(), parameter.getValue());
+//    }
+//    return (Long)q.getSingleResult();
+//  }
 
 }

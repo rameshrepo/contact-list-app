@@ -18,10 +18,7 @@ import org.mockito.Mockito;
 
 import javax.persistence.EntityNotFoundException;
 import javax.persistence.PersistenceException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.BDDMockito.given;
@@ -39,9 +36,9 @@ public class ContactServiceTest {
     @InjectMocks
     private ContactService contactService;
 
-    private List<Contact> list = new ArrayList<>();
+    private final List<Contact> list = new ArrayList<>();
 
-    private Organisation organisation = new Organisation();
+    private final Organisation organisation = new Organisation();
 
 
     @BeforeEach
@@ -163,7 +160,7 @@ public class ContactServiceTest {
         given(contactRepository.findByIdFetchOrganisation(id))
                 .willReturn(filteredContact);
 
-        given(organisationRepo.findById(id)).willReturn(java.util.Optional.ofNullable(organisation));
+        given(organisationRepo.findById(id)).willReturn(java.util.Optional.of(organisation));
 
         given(contactRepository.save(any())).willReturn(filteredContact);
 
@@ -178,7 +175,7 @@ public class ContactServiceTest {
 
     @DisplayName("JUnit test to throw exception when contact doesn't exist in the contact list")
     @Test
-    public void givenContactList_whenContactExists_thenThrowException(){
+    public void givenContactList_whenContactDoesntExists_thenThrowException(){
         // given - precondition or setup
 
         int id = 1;
@@ -189,11 +186,48 @@ public class ContactServiceTest {
         // when -  action or the behaviour that we are going test
 
 
-        PersistenceException thrown = Assertions.assertThrows(EntityNotFoundException.class, () -> {
-            contactService.updateByDTO(updateContactDTO);
-        });
+        PersistenceException thrown = Assertions.assertThrows(EntityNotFoundException.class, () -> contactService.updateByDTO(updateContactDTO));
         // then - verify the output
         Assertions.assertEquals("Unable to find Entity: contactassigment.contactlistapp.domain.Contact with id: 1", thrown.getMessage());
+        verify(contactRepository, never()).save(any(Contact.class));
+    }
+
+    @DisplayName("JUnit test to when organisation doesn't exist in the contact list save with no organisation")
+    @Test
+    public void givenContactList_whenOrganisationDoesntExists_InContact_thenSave(){
+        // given - precondition or setup
+        int id = 1;
+        Contact persistedContact = list.get(0);
+        organisation.setId(-1);
+        given(contactRepository.findByIdFetchOrganisation(id)).willReturn(persistedContact);
+        given(contactRepository.save(persistedContact)).willReturn(persistedContact);
+
+        // when -  action or the behaviour that we are going test
+        ContactDTO updateContactDTO = ContactDTO.createBy(list.get(0));
+        contactService.updateByDTO(updateContactDTO);
+
+        // then - verify the output
+        verify(contactRepository, times(1)).save(any(Contact.class));
+    }
+
+    @DisplayName("JUnit test to when organisation doesn't exist in the Organisation throws Exception")
+    @Test
+    public void givenContactList_whenOrganisationDoesntExists_InOrganisation_thenThrowsException(){
+
+        // given - precondition or setup
+
+        int id = 1;
+        Contact persistedContact = list.get(0);
+        organisation.setId(3);
+        given(contactRepository.findByIdFetchOrganisation(id)).willReturn(persistedContact);
+        given(organisationRepo.findById(3)).willReturn(Optional.empty());
+
+        ContactDTO updateContactDTO = ContactDTO.createBy(list.get(0));
+        // when -  action or the behaviour that we are going test
+        PersistenceException thrown = Assertions.assertThrows(EntityNotFoundException.class, () -> contactService.updateByDTO(updateContactDTO));
+
+        // then - verify the output
+        Assertions.assertEquals("Unable to find Entity: contactassigment.contactlistapp.domain.Organisation with id: 3", thrown.getMessage());
         verify(contactRepository, never()).save(any(Contact.class));
     }
 }

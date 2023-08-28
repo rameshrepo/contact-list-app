@@ -12,10 +12,10 @@ public class Contact
   @Access(AccessType.PROPERTY)
   private Integer id;
 
-  @Column(nullable = false, length = 30)
+  @Column(name="first_name",nullable = false, length = 30)
   private String firstName;
 
-  @Column(nullable = false, length = 30)
+  @Column(name="last_name", nullable = false, length = 30)
   private String lastName;
 
   @Column(name="created_at")
