@@ -32,7 +32,7 @@ public class UiContactSearchTest {
     Page page;
 
     private static File targetClassesDir = new File(UiContactSearchTest.class.getProtectionDomain().getCodeSource().getLocation().getPath());
-    private static Path path = Paths.get(targetClassesDir.getParent() + "/site/");
+    private static Path path = Paths.get(targetClassesDir.getParent() + "/screenshots/");
 
     @BeforeAll
     static void launchBrowser() {
