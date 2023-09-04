@@ -73,7 +73,7 @@ public class UiContactSearchTest {
     @Test
     void shouldDisplayContactsForMatchingSearchCriteriaAndEdit() {
         page.navigate("http://localhost:"+randomPort+"/contacts");
-        page.getByLabel("FirstName").fill("Sophie");
+        page.getByLabel("FirstName").type("Sophie");
         page.getByText("Search").click();
         assertEquals("Sophie", page.getByLabel("FirstName").inputValue());
         assertEquals("Klein", page.getByLabel("LastName").inputValue());
@@ -88,7 +88,7 @@ public class UiContactSearchTest {
     @Test
     void shouldDisplayContactsForMatchingSearchCriteria() {
         page.navigate("http://localhost:"+ randomPort + "/contacts");
-        page.getByLabel("LastName").fill("B");
+        page.getByLabel("LastName").type("B");
         page.getByText("Search").click();
         page.screenshot(new Page.ScreenshotOptions().setPath(Paths.get(path + "/multipleContact.png")));
         assertThat(page.getByRole(AriaRole.BUTTON).and (page.getByTitle("View")));
