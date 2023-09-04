@@ -15,7 +15,7 @@ public class OrganisationDTO
 
   public static List<OrganisationDTO> createListBy(List<Organisation> organisations)
   {
-    List<OrganisationDTO> organisationDTOs = new ArrayList<OrganisationDTO>(organisations.size());
+    List<OrganisationDTO> organisationDTOs = new ArrayList<>(organisations.size());
     for (Organisation o : organisations)
     {
       organisationDTOs.add(OrganisationDTO.createBy(o));
@@ -25,17 +25,10 @@ public class OrganisationDTO
 
   private Integer id;
   private String name;
-
-  public Long getAbn() {
-    return abn;
-  }
-
-  public void setAbn(long abn) {
-    this.abn = abn;
-  }
-
   private long abn;
 
+  //used by jsp
+  @SuppressWarnings("unused")
   public OrganisationDTO()
   {
   }
@@ -67,4 +60,29 @@ public class OrganisationDTO
     this.name = name;
   }
 
+  public Long getAbn() {
+    return abn;
+  }
+
+  public void setAbn(long abn) {
+    this.abn = abn;
+  }
+
+  public String getFormattedNameWithAbn() {
+    return this.getName() + " (" + getFormattedAbn() + ") ";
+  }
+
+  private String getFormattedAbn() {
+    int groupSize = 3;
+    String separator = " ";
+    String unformatted = this.getAbn().toString();
+    StringBuilder result = new StringBuilder(unformatted);
+
+    int i = groupSize;
+    while (i < unformatted.length()) {
+      result.insert(unformatted.length() - i, separator);
+      i += groupSize;
+    }
+    return result.toString();
+  }
 }

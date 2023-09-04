@@ -34,7 +34,7 @@
             <div class="form-group">
                 <div class="col-sm-3"></div>
                 <div class="col-sm-6" style="text-align:center">
-                    <button type="submit" class="btn btn-primary">Search</button>
+                    <button id="searchButton" type="submit" class="btn btn-primary">Search</button>
                 </div>
                 <div class="col-sm-3"></div>
             </div>
@@ -55,7 +55,7 @@
                     <c:forEach var="contact" items="${contacts}">
                         <tr class="vert-align">
                             <td>${contact.firstName} ${contact.lastName}</td>
-                            <td>${contact.organisationInfo} (${contact.organisationAbnFormatted})</td>
+                            <td>${contact.organisationNameWithAbn}</td>
                             <fmt:formatDate value="${contact.createdAt}" pattern="dd/MM/yyyy" var="createDate" />
                             <td>${createDate}</td>
                             <td class="text-center">
@@ -78,3 +78,20 @@
         </c:choose>
     </jsp:body>
 </t:layout>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#searchButton").attr("disabled", true);
+        $(".form-control").bind("keyup", activateSearch);
+        activateSearch();
+    });
+    function activateSearch()  {
+        if ($("#firstName").val().trim() != "" ||
+            $("#lastName").val().trim() != "" ||
+            $("#organisationName").val().trim() != "")
+        {
+            $("#searchButton").prop("disabled", false);
+        } else {
+            $("#searchButton").prop("disabled", true);
+        }
+    }
+</script>

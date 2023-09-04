@@ -17,7 +17,7 @@ public class ContactDTO
 
   public static List<ContactDTO> createListBy(List<Contact> contacts)
   {
-    List<ContactDTO> contactDTOs = new ArrayList<ContactDTO>(contacts.size());
+    List<ContactDTO> contactDTOs = new ArrayList<>(contacts.size());
     for (Contact c : contacts)
     {
       contactDTOs.add(ContactDTO.createBy(c));
@@ -84,6 +84,8 @@ public class ContactDTO
     this.createdAt = createdAt;
   }
 
+  //used by jsp
+  @SuppressWarnings("unused")
   public Date getCreatedAt() {return createdAt;}
 
   public OrganisationDTO getOrganisation()
@@ -96,19 +98,8 @@ public class ContactDTO
     this.organisation = organisation;
   }
 
-  public String getOrganisationInfo()
-  {
-    OrganisationDTO org = getOrganisation();
-    if (org != null)
-    {
-      return org.getName();
-    }
-    else
-    {
-      return Constants.EMPTY_STRING;
-    }
-  }
-
+  //used by jsp
+  @SuppressWarnings("unused")
   public Long getOrganisationAbn()
   {
     OrganisationDTO org = getOrganisation();
@@ -118,40 +109,33 @@ public class ContactDTO
     }
     else
     {
-      return new Long(0);
+      return 0L;
     }
   }
 
-  public String getOrganisationAbnFormatted() {
-    OrganisationDTO org = getOrganisation();
-    if (org != null)
-    {
-      int groupSize = 3;
-      String separator = " ";
-      String unformatted = org.getAbn().toString();
-      StringBuilder result = new StringBuilder(unformatted);
-
-      int i = groupSize;
-      while (i < unformatted.length()) {
-        result.insert(unformatted.length() - i, separator);
-        i += groupSize;
-      }
-
-      return result.toString();
-    }
-    else
-    {
-      return Constants.EMPTY_STRING;
-    }
-
-  }
-
+  //used by jsp
+  @SuppressWarnings("unused")
   public String getOrganisationName()
   {
     OrganisationDTO org = getOrganisation();
     if (org != null)
     {
       return org.getName();
+    }
+    else
+    {
+      return Constants.EMPTY_STRING;
+    }
+  }
+
+  //used by jsp
+  @SuppressWarnings("unused")
+  public String getOrganisationNameWithAbn()
+  {
+    OrganisationDTO org = getOrganisation();
+    if (org != null)
+    {
+      return org.getFormattedNameWithAbn();
     }
     else
     {
